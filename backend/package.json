@@ -64,7 +64,9 @@
     "typeorm": "^0.2.24",
     "uuid": "^3.4.0",
     "winston-loggly-bulk": "^2.0.3",
-    "winston-slack-webhook": "^0.1.6"
+    "winston-slack-webhook": "^0.1.6",
+    "class-validator": "0.12.2",
+    "standard-version": "^7.0.0"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.11.11",

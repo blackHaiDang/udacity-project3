@@ -43,7 +43,9 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            # Your code here
+            cd frontend
+            npm install
+            npm run build
             exit 1
       - save_cache:
           paths: [frontend/node_modules]
@@ -67,15 +69,20 @@ jobs:
 
   test-frontend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run: 
+          name: Run frontend test
+          command: |
+            cd frontend
+            npm install
+            npm run test
                 
   test-backend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Restore from cache
@@ -83,23 +90,33 @@ jobs:
             
   scan-frontend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run: 
+          name: Run frontend scan
+          command: |
+            cd frontend
+            npm install
+            npm audit --audit-level=critical --force
 
   scan-backend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      - restore_cache
+      - run: 
+          name: Run frontend scan
+          command: |
+            cd backend
+            npm install
+            npm audit --audit-level=critical --force
 
   deploy-infrastructure:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0 that supports AWS CLI
     steps:
       # Checkout code from git
       - run:
@@ -133,7 +150,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      # Docker image here that supports Ansible
+      - image: circleci/node:13.8.0 that supports Ansible
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -152,7 +169,7 @@ jobs:
 
   run-migrations:
     docker:
-      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0 that supports NodeJS
     steps:
       # Checkout code from git
       - run:
@@ -169,7 +186,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0 that supports AWS CLI
     steps:
       # Checkout code from git
       - run:
@@ -190,7 +207,7 @@ jobs:
                     
   deploy-backend:
     docker:
-      # Docker image here that supports Ansible
+      - image: circleci/node:13.8.0 that supports Ansible
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -230,7 +247,7 @@ jobs:
 
   cloudfront-update:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0 that supports AWS CLI
     steps:
       # Checkout code from git
       - run:
@@ -245,7 +262,7 @@ jobs:
 
 cleanup:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
