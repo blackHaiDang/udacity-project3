@@ -80,7 +80,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache
+      - restore_cache:
+          keys: [backend-build]
       - run: 
           name: Run frontend test
           command: |
@@ -100,7 +101,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache
+      - restore_cache:
+          keys: [frontend-build]
       - run: 
           name: Run frontend scan
           command: |
@@ -113,7 +115,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache
+      - restore_cache:
+          keys: [backend-build]
       - run: 
           name: Run backend scan
           command: |
@@ -125,7 +128,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0 that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -147,7 +150,10 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            # Your code here
+            pwd
+            BACKEND_IP=$(curl -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request GET https://api.memstash.io/values/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7})
+            echo ${BACKEND_IP} >> ./.circleci/ansible/inventory.txt
+            cat ./.circleci/ansible/inventory.txt
             exit 1
       - persist_to_workspace:
           root: ~/
@@ -159,18 +165,25 @@ jobs:
     docker:
       - image: circleci/node:13.8.0 that supports Ansible
     steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
+      - checkout
+      - attach_workspace:
+          at: .
+      - add_ssh_keys:
+          fingerprints: 
+            - "14:d5:f6:ee:30:3f:ef:ed:9a:87:fe:bd:5b:95:68:4a"
       - run:
           name: Install dependencies
           command: |
-            # Your code here
+            apk add --update ansible
+            pip install awscli
             exit 1
       - run:
           name: Configure server
           command: |
-            # Your code here
+            pwd
+            cat ./.circleci/ansible/inventory.txt
+            export ANSIBLE_HOST_KEY_CHECKING=false
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/configure-server.yml
             exit 1
       # Here's where you will add some code to rollback on failure      
 
@@ -178,7 +191,12 @@ jobs:
     docker:
       - image: circleci/node:13.8.0 that supports NodeJS
     steps:
-      # Checkout code from git
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - attach_workspace:
+          at: .
+      - create-dotenv-file
       - run:
           name: Run migrations
           command: |
@@ -204,11 +222,13 @@ jobs:
     docker:
       - image: circleci/node:13.8.0 that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            yum install -y tar gzip curl
+            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+            yum install -y nodejs
       - run:
           name: Get backend url
           command: |
@@ -225,28 +245,46 @@ jobs:
     docker:
       - image: circleci/node:13.8.0 that supports Ansible
     steps:
-      # Checkout code from git
-      # Add ssh keys with fingerprint
-      # attach workspace
+      - checkout
+      - add_ssh_keys:
+          fingerprints: 
+            - "14:d5:f6:ee:30:3f:ef:ed:9a:87:fe:bd:5b:95:68:4a"
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk add --update ansible
+            apk add --no-cache curl
+            apk add --no-cache openssh-client
+            apk add --no-cache --upgrade bash
+            pip install awscli
+      - create-dotenv-file
       - run:
           name: Deploy backend
           command: |
-            # your code here
+            pwd
+            tar czf backend.tar.gz backend/
+            export ANSIBLE_HOST_KEY_CHECKING=false
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
     docker:
       - image: circleci/node:13.8.0 that supports Ansible 
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk --no-cache add curl
+            apk add --update npm
+            apk add --no-cache python3 py3-pip \
+              && pip3 install --upgrade pip \
+              && pip install awscli
+      - create-dotenv-file
       - run:
           name: Get backend url
           command: |
@@ -254,11 +292,15 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
+            BACKEND_IP=$(curl -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request GET https://api.memstash.io/values/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7})
+            API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            curl -s "${API_URL}/api/status" -v
       - run:
           name: Frontend smoke test.
           command: |
-            # your code here
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
+            curl -s ${URL} | grep "Welcome"
       # Here's where you will add some code to rollback on failure  
 
   cloudfront-update:
@@ -280,6 +322,10 @@ jobs:
             --stack-name cloudfront-project3 \
             --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
+      - destroy-environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure  
 
   cleanup:
