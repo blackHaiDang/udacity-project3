@@ -4,7 +4,10 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here   
+      when:
+        type: string
+      id:
+        type: string  
     steps:
       - run:
           name: Destroy environments
@@ -16,7 +19,10 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
+      when:
+        type: string
+      id:
+        type: string  
     steps:
       - run:
           name: Revert migrations
@@ -84,9 +90,8 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - checkout
+      # ...
             
   scan-frontend:
     docker:
@@ -224,7 +229,7 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
+      - image: circleci/node:13.8.0 that supports Ansible 
     steps:
       # Checkout code from git
       - run:
