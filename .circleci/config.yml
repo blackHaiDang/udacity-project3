@@ -20,10 +20,8 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      when:
+      workflowID:
         type: string
-      id:
-        type: string  
     steps:
       - run:
           name: Destroy environments
@@ -233,7 +231,6 @@ jobs:
             fi
             exit 1
      # Here's where you will add some code to rollback on failure      
-
   deploy-frontend:
     docker:
       - image: circleci/node:13.8.0 that supports AWS CLI
