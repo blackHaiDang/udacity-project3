@@ -156,9 +156,6 @@ jobs:
           name: Ensure back-end infrastructure exists
           command: |
             pwd
-            for var in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN ; do eval unset $var ; done
-            aws configure set aws_access_key_id ASIA3RABNB5Z73A5LLJ3
-            aws configure set aws_secret_access_key NDhYPrO0jWTcLUUSOQ6F9vpFor0KQGtxBaTrFYaV
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
@@ -169,7 +166,6 @@ jobs:
           name: Ensure front-end infrastructure exist
           command: |
             pwd
-            for var in AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_SECURITY_TOKEN ; do eval unset $var ; done
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
