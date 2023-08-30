@@ -205,10 +205,10 @@ jobs:
       - run:
           name: Configure server
           command: |
-            pwd
-            cat ./.circleci/ansible/inventory.txt
-            export ANSIBLE_HOST_KEY_CHECKING=false
-            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/configure-server.yml
+            pwd &&
+            ls -la
+            cat inventory
+            ansible-playbook -i inventory configure-server.yaml
              
       # Here's where you will add some code to rollback on failure      
 
