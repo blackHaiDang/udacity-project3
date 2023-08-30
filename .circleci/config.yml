@@ -146,7 +146,7 @@ jobs:
             npm audit --audit-level=critical
   deploy-infrastructure:
     docker:
-      - image: circleci/node:13.8.0 that supports AWS CLI
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run:
