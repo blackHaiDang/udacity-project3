@@ -202,7 +202,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            pip install awscli
+            pip install awscli --upgrade
              
       - run:
           name: Configure server
@@ -284,7 +284,7 @@ jobs:
             apk add --no-cache curl
             apk add --no-cache openssh-client
             apk add --no-cache --upgrade bash
-            pip install awscli
+            pip install awscli --upgrade
       - create-dotenv-file
       - run:
           name: Deploy backend
@@ -307,7 +307,7 @@ jobs:
             apk add --update npm
             apk add --no-cache python3 py3-pip \
               && pip3 install --upgrade pip \
-              && pip install awscli
+              && pip install awscli --upgrade
       - create-dotenv-file
       - run:
           name: Get backend url
