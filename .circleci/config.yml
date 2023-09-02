@@ -125,9 +125,10 @@ jobs:
           name: Run frontend scan
           command: |
             cd frontend
-            # npm i --package-lock-only
-            # npm audit fix --audit-level=critical
-            # npm audit fix --audit-level=critical --force
+            npm install
+            npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
             npm audit --audit-level=critical
   scan-backend:
     docker:
@@ -140,9 +141,10 @@ jobs:
           name: Run backend scan
           command: |
             cd backend
-            # npm i --package-lock-only
-            # npm audit fix
-            # npm audit fix --audit-level=critical --force
+            npm install
+            npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
             npm audit --audit-level=critical
   deploy-infrastructure:
     docker:
