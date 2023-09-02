@@ -125,9 +125,9 @@ jobs:
           name: Run frontend scan
           command: |
             cd frontend
-            npm i --package-lock-only
-            npm audit fix --audit-level=critical
-            npm audit fix --audit-level=critical --force
+            # npm i --package-lock-only
+            # npm audit fix --audit-level=critical
+            # npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
   scan-backend:
     docker:
@@ -140,9 +140,9 @@ jobs:
           name: Run backend scan
           command: |
             cd backend
-            npm i --package-lock-only
-            npm audit fix
-            npm audit fix --audit-level=critical --force
+            # npm i --package-lock-only
+            # npm audit fix
+            # npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical
   deploy-infrastructure:
     docker:
@@ -161,7 +161,7 @@ jobs:
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" --debug
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
                
       - run:
           name: Ensure front-end infrastructure exist
@@ -203,7 +203,7 @@ jobs:
           command: |
             apk add --update ansible
             pip install awscli --upgrade
-             
+      - create-dotenv-file   
       - run:
           name: Configure server
           command: |
@@ -223,7 +223,7 @@ jobs:
           keys: [backend-build]
       - attach_workspace:
           at: .
-      # - create-dotenv-file
+      - create-dotenv-file
       # - run:
       #     name: Install AWS CLI dependencies
       #     working_directory: /tmp
