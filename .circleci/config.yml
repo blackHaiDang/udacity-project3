@@ -228,6 +228,7 @@ jobs:
           name: Run database migrations
           command: |
             cd backend
+            npm cache clean --force
             npm install
             npm audit fix --audit-level=critical
             npm audit fix --audit-level=critical --force
