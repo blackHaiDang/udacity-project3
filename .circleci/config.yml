@@ -219,7 +219,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - aws-cli/setup
       - restore_cache:
           keys: [backend-build]
       - attach_workspace:
@@ -237,6 +236,7 @@ jobs:
           name: Run database migrations
           command: |
             cd backend
+            pwd
             npm run migrations > migrations_dump.txt
              
       - run:
