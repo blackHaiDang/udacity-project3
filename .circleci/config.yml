@@ -341,15 +341,26 @@ jobs:
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --output text
             )
-            API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            curl -s "${API_URL}/api/status" -v
+             export API_URL="http://${BACKEND_IP}:3030"
+             echo "${API_URL}"
+             if curl "${API_URL}/api/status" | grep "ok"
+             then
+               return 0
+             else
+               return 1
+             fi
       - run:
           name: Frontend smoke test.
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
-            curl -s ${URL} | grep "Welcome"
-      # Here's where you will add some code to rollback on failure  
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+              # Change this to 0 after the job fails
+              return 1
+            else
+              return 1
+            fi
 
   cloudfront-update:
     docker:
