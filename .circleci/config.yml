@@ -255,8 +255,13 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            BACKEND_IP=$(cat ./.circleci/ansible/inventory.txt | tail -n 1)
-            echo "${API_URL}"
+            export BACKEND_IP=$(
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text
+            )
+            export API_URL="https://${BACKEND_IP}:3030"
             echo ENVIRONMENT=production > "frontend/.env"
             echo API_URL=${API_URL} >> "frontend/.env"
             cat frontend/.env
