@@ -228,8 +228,6 @@ jobs:
             sudo ./aws/install
       - restore_cache:
           keys: [backend-build]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Run database migrations
           no_output_timeout: 30m
