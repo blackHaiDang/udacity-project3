@@ -306,6 +306,7 @@ jobs:
           command: |
             cd backend
             npm install --save --legacy-peer-deps
+            npm run start
             npm run build
             cd ..
             tar czf backend.tar.gz backend/
