@@ -216,20 +216,27 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/python:3.11.4-node
+      - image: circleci/node:13.8.0
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt install -y tar gzip curl
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip -qq awscliv2.zip
+            sudo ./aws/install
       - restore_cache:
           keys: [backend-build]
       - attach_workspace:
-          at: .
-      - create-dotenv-file
+          at: ~/
       - run:
           name: Run database migrations
           command: |
             cd backend
-            # npm install --save --legacy-peer-deps
-            npm run migrations > migrations_dump.txt
+            npm install --save --legacy-peer-deps
+            npm run migrations >> migrations.txt      
+            cat migrations.txt  
              
       - run:
           name: Send migration results to kvdb
@@ -302,9 +309,10 @@ jobs:
           at: ~/     
       - run:
           name: Deploy backend
+          no_output_timeout: 30m
           command: |
             cd backend
-            npm install
+            npm install --save --legacy-peer-deps
             npm run start
             npm run build
             cd ..
