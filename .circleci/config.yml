@@ -251,6 +251,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - create-dotenv-file
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -295,6 +296,7 @@ jobs:
       - image: python:3.7-alpine3.16
     steps:
       - checkout
+      - create-dotenv-file
       - add_ssh_keys:
           fingerprints: 
             - "90:8b:11:55:8e:3c:8b:a2:8d:0d:5e:4c:31:bf:32:dd"
