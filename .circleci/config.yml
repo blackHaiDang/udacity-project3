@@ -277,7 +277,7 @@ jobs:
             npm install
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp frontend/dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
+            aws s3 cp ./frontend/dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
       - persist_to_workspace:
           root: .
           paths:
@@ -318,6 +318,8 @@ jobs:
       - image: alpine:latest 
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Install dependencies
           command: |
@@ -327,14 +329,15 @@ jobs:
               && pip3 install --upgrade pip \
               && pip install awscli --upgrade
       - create-dotenv-file
-      # - run:
-      #     name: Get backend url
-      #     command: |
-      #       # your code here
       - run:
           name: Backend smoke test.
           command: |
-            BACKEND_IP=$(curl -H "token: 7079126b-54c1-4ae1-b7cf-577d8a27c76f" --request GET https://api.memstash.io/values/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7})
+            export BACKEND_IP=$(
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --output text
+            )
             API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             curl -s "${API_URL}/api/status" -v
