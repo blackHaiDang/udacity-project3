@@ -299,11 +299,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
-            apk add --no-cache curl
-            apk add --no-cache openssh-client
-            apk add --no-cache --upgrade bash
-            pip install awscli --upgrade
+            apk add --update --no-cache tar gzip nodejs npm aws-cli ansible
       - create-dotenv-file
       - run:
           name: Deploy backend
