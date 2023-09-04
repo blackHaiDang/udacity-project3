@@ -232,6 +232,7 @@ jobs:
           at: ~/
       - run:
           name: Run database migrations
+          no_output_timeout: 30m
           command: |
             cd backend
             npm install --save --legacy-peer-deps
