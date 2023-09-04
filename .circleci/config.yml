@@ -247,8 +247,6 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - attach_workspace:
-          at: .
       - run:
           name: Install AWS CLI dependencies
           working_directory: /tmp
@@ -256,6 +254,8 @@ jobs:
             yum install -y tar gzip curl
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             yum install -y nodejs
+      - attach_workspace:
+          at: .
       - run:
           name: Get backend url
           command: |
