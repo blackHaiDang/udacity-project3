@@ -305,20 +305,20 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache tar gzip nodejs npm aws-cli ansible
+            apk add --update ansible
+            apk add --no-cache curl
+            apk add --no-cache openssh-client
+            apk add --no-cache --upgrade bash
+            pip install awscli --upgrad
       - restore_cache:
           keys: [backend-build]
       - run:
           name: Deploy backend
           command: |
-            cd backend
-            npm install --save --legacy-peer-deps
-            npm run build
-            cd ..
-            tar -C backend -czvf artifact.tar.gz .
-            cd .circleci/ansible
+            pwd
+            tar czf backend.tar.gz backend/
             export ANSIBLE_HOST_KEY_CHECKING=false
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
       # Here's where you will add some code to rollback on failure  
 
   smoke-test:
