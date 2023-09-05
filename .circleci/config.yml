@@ -313,7 +313,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             cd backend
-            npm install
+            npm install --save --legacy-peer-deps
             npm run start
             npm run build
             cd ..
