@@ -309,7 +309,7 @@ jobs:
             apk add --no-cache curl
             apk add --no-cache openssh-client
             apk add --no-cache --upgrade bash
-            pip install awscli --upgrad
+            pip install awscli --upgrade
       - restore_cache:
           keys: [backend-build]
       - run:
