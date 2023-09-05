@@ -1,53 +1,52 @@
 ﻿---
-- name: "update apt packages."
-  become: yes
-  apt:
-    update_cache: yes
 
-- name: "upgrade packages"
-  become: yes
-  apt:
-    upgrade: yes
+- name: "Create backend directory"
 
-- name: "install dependencies."
-  become: yes
-  apt:
-    name: ["tar", "nodejs", "npm"]
-    state: latest
-    update_cache: yes
+  file:
 
-- name: "install pm2"
-  become: yes
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+    path: "~/backend"
 
-- name: "Copy artifact to home"
+    state: "directory"
+
+    mode: 0755
+
+
+ 
+
+- name: "Copy build folder"
+
   copy:
-    src: artifact.tar.gz
-    dest: /home/ubuntu/artifact.tar.gz
-    backup: yes
 
-- name: "Unarchive files"
+    src: "../../artifact.tar.gz"
+
+    dest: "~/backend/artifact.tar.gz"
+
+
+ 
+
+- name: "Extract build folder"
+
   unarchive:
-    src: artifact.tar.gz
-    dest: /home/ubuntu
 
-- name: "Start pm2"
-  shell: |
-    cd /home/ubuntu
-    npm install
-    pm2 stop default
-    pm2 start npm -- run "start:dev"
-  register: execute_node
+    remote_src: yes
 
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
+    src: "~/backend/artifact.tar.gz"
 
-- name: "Configure pm2 to start as service"
-  become: yes
-  shell: |
-    env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
+    dest: "~/backend"
+
+
+ 
+
+- name: "Start server"
+
+  shell:
+
+    cmd: |
+
+      cd ~/backend
+
+      npm install
+
+      pm2 stop default
+
+      pm2 start npm -- start

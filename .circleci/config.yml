@@ -233,7 +233,7 @@ jobs:
           no_output_timeout: 30m
           command: |
             cd backend
-            npm install --save --legacy-peer-deps
+            npm install
             npm run migrations >> migrations.txt      
             cat migrations.txt  
              
@@ -300,24 +300,24 @@ jobs:
       - add_ssh_keys:
           fingerprints: 
             - "90:8b:11:55:8e:3c:8b:a2:8d:0d:5e:4c:31:bf:32:dd"
+      - attach_workspace:
+          at: .circleci/ansible/
       - run:
           name: Install dependencies
           command: |
             apk add --update --no-cache tar gzip nodejs npm aws-cli ansible
       - restore_cache:
           keys: [backend-build]
-      - attach_workspace:
-          at: ~/     
       - run:
           name: Deploy backend
           no_output_timeout: 30m
           command: |
             cd backend
-            npm install --save --legacy-peer-deps
+            npm install
             npm run start
             npm run build
             cd ..
-            tar czf backend.tar.gz backend/
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=false
             ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
