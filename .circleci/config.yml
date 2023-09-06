@@ -200,11 +200,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache tar
-            apk add --update --no-cache gzip
-            apk add --update --no-cache ansible
-            apk add --update --no-cache aws-cli
-            apk add --update --no-cache curl
+            apk add --update ansible
+            apk add openssh-client
+            pip install awscli --upgrade
       
       - run:
           name: Configure server
