@@ -1,19 +1,19 @@
 ﻿---
 - name: Create directory
-  become: yes
+  become: true
   file:
     path: /home/ubuntu/backend
     state: directory
 
 - name: Copy compressed backend folder
-  become: yes
+  become: true
   unarchive:
     src: ~/project/artifact.tar.gz
     dest: /home/ubuntu/backend
     owner: ubuntu
 
 - name: Run the web server
-  become: yes
+  become: true
   shell:
     cmd: |
       npm install
