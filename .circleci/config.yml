@@ -336,7 +336,7 @@ jobs:
           working_directory: ./.circleci/ansible
           command: |
             cat inventory
-            ansible-playbook -i inventory deploy-server.yaml -vv
+            ansible-playbook -i inventory.txt deploy-server.yaml -vv
        
       # - run:
       #     name: Deploy backend
