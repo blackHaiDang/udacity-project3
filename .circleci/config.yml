@@ -204,9 +204,13 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add openssh-client
-            apk add --update ansible
-      
+            apk add --update --no-cache tar
+            apk add --update --no-cache gzip
+            apk add --update --no-cache ansible
+            apk add --update --no-cache aws-cli
+            apk add --update --no-cache curl
+      - restore_cache:
+          keys: [ backend-build ]
       - run:
           name: Configure server
           command: |
