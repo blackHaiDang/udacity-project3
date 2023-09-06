@@ -322,34 +322,38 @@ jobs:
           fingerprints: 
             - "5b:02:9b:ee:aa:70:b8:47:4b:1c:7b:2e:02:80:72:00"
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install dependencies
+          working_directory: /tmp
           command: |
-            apk add --update --no-cache tar      
-            apk add --update --no-cache gzip
-            apk add --update --no-cache nodejs
-            apk add --update --no-cache npm
-            apk add --update --no-cache aws-cli
-            apk add --update --no-cache ansible
-            apk add --update --no-cache curl
-       
+            apk add --update ansible curl rsync openssh nodejs npm
+            ansible --version
+            pip install awscli
+            aws --version
       - run:
           name: Deploy backend
+          working_directory: ./.circleci/ansible
           command: |
-            cd backend
-            npm install
-            npm run build
-            cd ..
-            tar -C backend -czvf artifact.tar.gz .
-            mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
-            cp ~/project/backend/.env .circleci/ansible/roles/deploy/files/backend.env
-            cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
-      # Here's where you will add some code to rollback on failure  
+            cat inventory
+            ansible-playbook -i inventory deploy-server.yaml -vv
+       
+      # - run:
+      #     name: Deploy backend
+      #     command: |
+      #       cd backend
+      #       npm install
+      #       npm run build
+      #       cd ..
+      #       tar -C backend -czvf artifact.tar.gz .
+      #       mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
+      #       mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+      #       cp ~/project/backend/.env .circleci/ansible/roles/deploy/files/backend.env
+      #       cd .circleci/ansible
+      #       echo "Contents  of the inventory.txt file is -------"
+      #       cat inventory.txt
+      #       ansible-playbook -i inventory.txt deploy-backend.yml
+      # # Here's where you will add some code to rollback on failure  
 
   smoke-test:
     docker:
