@@ -151,7 +151,11 @@ jobs:
       - checkout
       - run:
           name: Install tar and zip utilities
-          command: yum -y install tar gzip
+          command: |
+            cat .circleci/ansible/inventory.txt
+            ls ~/project/.circleci/ansible/
+            cat ~/project/.circleci/ansible/inventory.txt
+            yum -y install tar gzip jq npm
       - run:
           name: Ensure back-end infrastructure exists
           command: |
