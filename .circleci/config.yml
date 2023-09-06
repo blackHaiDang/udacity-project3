@@ -195,17 +195,21 @@ jobs:
       - add_ssh_keys:
           fingerprints: 
             - "90:8b:11:55:8e:3c:8b:a2:8d:0d:5e:4c:31:bf:32:dd"
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-            apk add openssh-client
-            pip install awscli --upgrade
       - attach_workspace:
           at: ~/
       - run:
+          name: Install dependencies
+          command: |
+            apk add --update --no-cache tar
+            apk add --update --no-cache gzip
+            apk add --update --no-cache ansible
+            apk add --update --no-cache aws-cli
+            apk add --update --no-cache curl
+      
+      - run:
           name: Configure server
           command: |
+            echo ENVIRONMENT=production >> backend/.env
             echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> backend/.env
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> backend/.env
             echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> backend/.env
