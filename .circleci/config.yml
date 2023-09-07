@@ -44,6 +44,7 @@ commands:
             SUCCESS = 1
             if(( $SUCCESS==1 )); 
             then
+            echo "success"
             #  cd ~/project/backend
             #  npm install
             #  Add revert code here. You can find this in the Getting Started section.
@@ -447,9 +448,7 @@ jobs:
             echo "Current Workflow Id: ${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail
+      - revert-migrations
       # Here's where you will add some code to rollback on failure  
 
   cleanup:
