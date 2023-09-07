@@ -390,10 +390,11 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
             --output text)
-             echo $BACKEND_IP
+            echo $BACKEND_IP
             export API_URL="http://${BACKEND_IP}:3030"
             echo $API_URL
-            if curl "http://${API_URL}/api/status" --retry-max-time 60 --retry 5 --retry-max-time 60 | grep "ok"
+            echo "we gonna curl ${API_URL}/api/status"
+            if curl "${API_URL}/api/status" --retry-max-time 60 --retry 5 --retry-max-time 60 | grep "ok"
             then
               exit 0
             else
