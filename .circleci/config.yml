@@ -439,7 +439,6 @@ jobs:
             --template-file .circleci/files/cloudfront.yml \
             --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
             --stack-name InitialStack 
-            --on-failure DELETE
             
             echo "OldWorkflow_ID: ${OldWorkflow_ID}"
             echo "Current Workflow Id: ${CIRCLE_WORKFLOW_ID:0:7}"
