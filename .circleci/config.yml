@@ -383,7 +383,7 @@ jobs:
              echo $BACKEND_IP
             export API_URL="http://${BACKEND_IP}:3030"
             echo $API_URL
-            if curl "${API_URL}/api/status" | grep "ok"
+            if curl "${API_URL}/api/status" --retry-max-time 60 --retry 5 --retry-max-time 60 | grep "ok"
             then
               exit 0
             else
