@@ -457,7 +457,12 @@ jobs:
           name: Get old stack workflow id and remove old stacks and files
           command: |
             
-            cd ~/project
+            export OldWorkflowID=$(aws cloudformation --region us-east-1 \
+                list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                --no-paginate --output text)
+            echo "OldWorkflowID = ${OldWorkflowID}"
+            echo "CIRCLE_WORKFLOW_ID = ${CIRCLE_WORKFLOW_ID:0:7}"
+            echo ${OldWorkflowID} > OldWorkflow.txt
             cat OldWorkflow.txt
             OldWorkflow=$(cat OldWorkflow.txt)
             echo "OldWorkflow = ${OldWorkflow}"
