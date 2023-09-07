@@ -454,6 +454,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install dependencies
+          command: |
+            yum -y install python3
+      - run:
           name: Get old stack workflow id and remove old stacks and files
           command: |
             
@@ -470,11 +474,12 @@ jobs:
             if [ "${OldWorkflow}" != ${CIRCLE_WORKFLOW_ID:0:7} ]
               then
                 echo "delete process"
-              for bucket in $(aws s3 ls | awk '{print $3}' | grep 'udapeople-${OldWorkflow}'); do  aws s3 rb "s3://${bucket}" --force ; done
+              for bucket in $(aws s3 ls | awk '{print $3}' | grep 'udapeople'); do  aws s3 rb "s3://${bucket}" --force ; done
               # aws s3 rm "s3://udapeople-${OldWorkflow}" --recursive
               sleep 30
-              aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-BackEnd-${OldWorkflow}" 
-              aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-FrontEnd-${OldWorkflow}" 
+              py .circleci/files/clean-stacks.py
+              # aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-BackEnd-${OldWorkflow}" 
+              # aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-FrontEnd-${OldWorkflow}" 
               else
                 echo "can not clean up"
             fi
