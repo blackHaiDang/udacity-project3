@@ -419,7 +419,7 @@ jobs:
 
   cloudfront-update:
     docker:
-      - image: amazon/aws-cli
+      - image: amazon/aws-cli 
     steps:
       - checkout
       - run:
