@@ -447,7 +447,7 @@ jobs:
             echo "Current Workflow Id: ${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment:
           workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert_migrations:
+      - revert-migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
       # Here's where you will add some code to rollback on failure  
