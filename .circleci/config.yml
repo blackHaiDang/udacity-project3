@@ -412,9 +412,10 @@ jobs:
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
-              exit 0
+              # Change this to 0 after the job fails
+              return 1
             else
-              exit 1
+              return 1
             fi
 
   cloudfront-update:
