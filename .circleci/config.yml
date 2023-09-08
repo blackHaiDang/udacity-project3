@@ -46,7 +46,6 @@ commands:
             then
               cd ~/project/backend
               npm install
-              #  Add revert code here. You can find this in the Getting Started section.
               npm run build
               npm run migrations:revert
             fi
@@ -417,6 +416,10 @@ jobs:
             else
               return 1
             fi
+      - destroy-environment:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflowID: ${CIRCLE_WORKFLOW_ID:0:7}
 
   cloudfront-update:
     docker:
