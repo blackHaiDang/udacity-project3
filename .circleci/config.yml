@@ -353,23 +353,6 @@ jobs:
             export ANSIBLE_HOST_KEY_CHECKING=false
             cat ./.circleci/ansible/inventory.txt
             ansible-playbook -i ./.circleci/ansible/inventory.txt ./.circleci/ansible/deploy-backend.yml -vvv
-       
-      # - run:
-      #     name: Deploy backend
-      #     command: |
-      #       cd backend
-      #       npm install
-      #       npm run build
-      #       cd ..
-      #       tar -C backend -czvf artifact.tar.gz .
-      #       mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-      #       mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
-      #       cp ~/project/backend/.env .circleci/ansible/roles/deploy/files/backend.env
-      #       cd .circleci/ansible
-      #       echo "Contents  of the inventory.txt file is -------"
-      #       cat inventory.txt
-      #       ansible-playbook -i inventory.txt deploy-backend.yml
-      # # Here's where you will add some code to rollback on failure  
 
   smoke-test:
     docker:
@@ -480,12 +463,9 @@ jobs:
               then
                 echo "delete process"
               for bucket in $(aws s3 ls | awk '{print $3}' | grep 'udapeople'); do  aws s3 rb "s3://${bucket}" --force ; done
-              # aws s3 rm "s3://udapeople-${OldWorkflow}" --recursive
               sleep 30
               pip3 install boto3
-              python3 .circleci/files/clean-stacks.py
-              # aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-BackEnd-${OldWorkflow}" 
-              # aws cloudformation delete-stack --region us-east-1 --stack-name "UdaPeople-FrontEnd-${OldWorkflow}" 
+              python3 .circleci/files/clean-stacks.py  
               else
                 echo "can not clean up"
             fi
