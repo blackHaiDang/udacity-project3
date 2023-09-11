@@ -42,7 +42,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure https://kvdb.io/GJFVRtVYcgKgj4qycndGXk/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            SUCCESS=$(curl --insecure https://kvdb.io/GJFVRtVYcgKgj4qycndGXk/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1')
             echo $SUCCESS
             if [[ "${SUCCESS}" == "success" ]]s
             then
