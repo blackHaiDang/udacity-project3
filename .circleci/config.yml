@@ -44,11 +44,10 @@ commands:
           command: |
             SUCCESS=$(curl --insecure https://kvdb.io/GJFVRtVYcgKgj4qycndGXk/migration_${CIRCLE_WORKFLOW_ID:0:7})
             echo $SUCCESS
-            if [[ "${SUCCESS}" == "1" ]]
+            if [[ "${SUCCESS}" == "success" ]]s
             then
               cd ~/project/backend
               npm install
-              npm run build
               npm run migrations:revert
             fi
             
